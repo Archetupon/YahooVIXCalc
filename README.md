@@ -13,6 +13,7 @@ for this little example a June 29th marturity and a July 6th maturity, which are
 
 Example:
 Say I'd like to get a real-time VIX calc for large caps, small caps, and gold. I could call
+
 [MFIV_LC] = YahooMFIVCalc('SPY');
 [MFIV_SC] = YahooMFIVCalc('IWM');
 [MFIV_GLD] = YahooMFIVCalc('GLD');
