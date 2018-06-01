@@ -257,7 +257,7 @@ for k=1:size(user_maturities,1)
  put_cell{k} = [put_cell{k}(:,1:6) array2table(b_a_mid) put_cell{k}(:,7:end)];
  %***************************************************%
  
- %++ Create join table for the "Forward SPX level" calc ++%
+ %++ Create join table for the "Forward index level" calc ++%
  join_cell{k} = innerjoin(call_cell{k},put_cell{k},'LeftKeys','Strike','RightKeys','Strike');
  
  %***************************************************%
