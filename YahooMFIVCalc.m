@@ -261,21 +261,7 @@ for k=1:size(user_maturities,1)
  join_cell{k} = innerjoin(call_cell{k},put_cell{k},'LeftKeys','Strike','RightKeys','Strike');
  
  %***************************************************%
-
-%  %++ Save tables as Excel files ++%
-%  call_file_name =[date,ticker,'CallOptionChain',user_maturities(k,:),'.xlsx'];
-%  writetable(call_table,call_file_name)
-%  put_file_name =[date,ticker,'PutOptionChain',user_maturities(k,:),'.xlsx'];
-%  writetable(put_table,put_file_name)
-%  %***************************************************%
 end
-
-%++ Pull some additional data ++%
-% % Spot Price%
-% pattern1 = '"regularMarketPrice":{"raw":';% start of list
-% pattern2 = ',"fmt":"';     % end of list
-% list = extractBetween(html2, pattern1, pattern2); 
-% spot_price = str2double(list{1});
 
 % 1M Interest Rate
 ratename = 'http://www.global-rates.com/interest-rates/libor/american-dollar/usd-libor-interest-rate-1-month.aspx';
@@ -291,16 +277,14 @@ interest_rate = str2double(rates{1})/100;
 %***************************************************%
 
 %++ Find strikes for minimum call-put for "forward" ++% 
-[~,f_strike_near_index] = min(abs(table2array(join_cell{1}(:,7))-table2array(join_cell{1}(:,18))));
+[cp_min_near,f_strike_near_index] = min(abs(table2array(join_cell{1}(:,7))-table2array(join_cell{1}(:,18))));
 f_strike_near = table2array(join_cell{1}(f_strike_near_index,3));
-[~,f_strike_next_index] = min(abs(table2array(join_cell{2}(:,7))-table2array(join_cell{2}(:,18))));
+[cp_min_next,f_strike_next_index] = min(abs(table2array(join_cell{2}(:,7))-table2array(join_cell{2}(:,18))));
 f_strike_next = table2array(join_cell{2}(f_strike_next_index,3));
 days_to_near = datenum(table2array(join_cell{1}(1,2)))-datenum(date);
 days_to_next = datenum(table2array(join_cell{2}(1,2)))-datenum(date);
-F_1 = f_strike_near + exp(interest_rate*(days_to_near/365))*(...
-    table2array(join_cell{1}(f_strike_near_index,7))-table2array(join_cell{1}(f_strike_near_index,18)));
-F_2 = f_strike_next + exp(interest_rate*(days_to_next/365))*(...
-    table2array(join_cell{2}(f_strike_next_index,7))-table2array(join_cell{2}(f_strike_next_index,18)));
+F_1 = f_strike_near + exp(interest_rate*(days_to_near/365))*cp_min_near;
+F_2 = f_strike_next + exp(interest_rate*(days_to_next/365))*cp_min_next;
 F_1_test = (table2array(join_cell{1}(:,3)) <= F_1).*table2array(join_cell{1}(:,3));
 F_2_test = (table2array(join_cell{2}(:,3)) <= F_2).*table2array(join_cell{2}(:,3));
 K_vec = zeros(size(user_maturities,1),1);
@@ -403,4 +387,3 @@ MFIV = 100*sqrt(((days_to_near/365)*imp_var_1*int_factor_1+(days_to_next/365)*im
 %***************************************************%
 
 end
-
