@@ -271,11 +271,11 @@ for k=1:size(user_maturities,1)
 end
 
 %++ Pull some additional data ++%
-% Spot Price%
-pattern1 = '"regularMarketPrice":{"raw":';% start of list
-pattern2 = ',"fmt":"';     % end of list
-list = extractBetween(html2, pattern1, pattern2); 
-spot_price = str2double(list{1});
+% % Spot Price%
+% pattern1 = '"regularMarketPrice":{"raw":';% start of list
+% pattern2 = ',"fmt":"';     % end of list
+% list = extractBetween(html2, pattern1, pattern2); 
+% spot_price = str2double(list{1});
 
 % 1M Interest Rate
 ratename = 'http://www.global-rates.com/interest-rates/libor/american-dollar/usd-libor-interest-rate-1-month.aspx';
@@ -398,8 +398,9 @@ imp_var_2 = imp_var_2*2/(days_to_next/365) - 1/(days_to_next/365)*(F_2/K_vec(2)-
 
 %++ Calculate the volatility index via interpolation ++%
 int_factor_1 = (days_to_next-30)/(days_to_next-days_to_near);
-int_factor_2 = (30-days_to_near)/(days_to_near-days_to_next);
+int_factor_2 = (30-days_to_near)/(days_to_next-days_to_near);
 MFIV = 100*sqrt(((days_to_near/365)*imp_var_1*int_factor_1+(days_to_next/365)*imp_var_2*int_factor_2)*(365/30));
 %***************************************************%
 
 end
+
